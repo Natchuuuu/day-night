@@ -43,17 +43,39 @@ public class DayNightCyclePlugin extends Plugin {
 	private ScheduledExecutorService executorService;
 
 	private static final String HD_PLUGIN_CONFIG_GROUP = "hd";
+	private int initialSkyboxColor;
+	private String initialBrightness;
+	private String initialSkyColor;
+	private boolean initialOverrideSky;
+	private boolean initialExperimentalDecoupleWaterFromSkyColor;
 
 	@Override
 	protected void startUp() throws Exception {
+		// Store the default values before changing them
+		initialSkyboxColor = client.getSkyboxColor();
+		if (isHdPluginEnabled()) {
+			initialBrightness = configManager.getConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2");
+			initialSkyColor = configManager.getConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor");
+			initialOverrideSky = Boolean.parseBoolean(configManager.getConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky"));
+			initialExperimentalDecoupleWaterFromSkyColor = Boolean.parseBoolean(configManager.getConfiguration(HD_PLUGIN_CONFIG_GROUP, "experimentalDecoupleWaterFromSkyColor"));
+		}
 		updateEnvironmentSettings();
+		//Update settings every minute
 		executorService = Executors.newSingleThreadScheduledExecutor();
 		executorService.scheduleAtFixedRate(this::updateEnvironmentSettings, 0, 1, TimeUnit.MINUTES);
 	}
 
 	@Override
 	protected void shutDown() throws Exception {
-		setDayEnvironment();
+		// Restore the original settings to their initial values
+		client.setSkyboxColor(initialSkyboxColor);
+		if (isHdPluginEnabled()) {
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", initialBrightness);
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", initialSkyColor);
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky", initialOverrideSky);
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "experimentalDecoupleWaterFromSkyColor", initialExperimentalDecoupleWaterFromSkyColor);
+		}
+		// End time check
 		if (executorService != null && !executorService.isShutdown()) {
 			executorService.shutdown();
 		}
@@ -108,7 +130,7 @@ public class DayNightCyclePlugin extends Plugin {
 	}
 
 	private void setNightEnvironment() {
-		client.setSkyboxColor(0);
+		client.setSkyboxColor(config.nightColor().getRGB());
 		if (isHdPluginEnabled()){
 			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", config.nightBrightness());
 			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", "RUNELITE");
@@ -118,7 +140,7 @@ public class DayNightCyclePlugin extends Plugin {
 	}
 
 	private void setDayEnvironment() {
-		client.setSkyboxColor(12179199);
+		client.setSkyboxColor(config.dayColor().getRGB());
 		if (isHdPluginEnabled()) {
 			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", config.dayBrightness());
 			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", "DEFAULT");
