@@ -1,18 +1,18 @@
 package com.daynightcycle;
 
 import com.google.inject.Provides;
-import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
 
+import javax.inject.Inject;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.concurrent.Executors;
@@ -23,7 +23,8 @@ import java.util.concurrent.TimeUnit;
 @PluginDescriptor(
 		name = "Day/Night Cycle",
 		description = "Simulates a day/night cycle using 117's HD plugin based on your local time.",
-		tags = { "day", "night", "cycle", "time", "ambience" }
+		tags = { "day", "night", "cycle", "time", "ambience" },
+		conflicts = "Skybox"
 )
 public class DayNightCyclePlugin extends Plugin {
 	@Inject
@@ -44,7 +45,6 @@ public class DayNightCyclePlugin extends Plugin {
 
 	@Override
 	protected void startUp() throws Exception {
-		log.info("Day/Night Cycle started!");
 		updateEnvironmentSettings();
 		executorService = Executors.newSingleThreadScheduledExecutor();
 		executorService.scheduleAtFixedRate(this::updateEnvironmentSettings, 0, 1, TimeUnit.MINUTES);
@@ -105,9 +105,11 @@ public class DayNightCyclePlugin extends Plugin {
 	}
 
 	private void setNightEnvironment() {
+		client.setSkyboxColor(0);
 		configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", config.nightBrightness());
 		configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", "RUNELITE");
 		configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky", true);
+		configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "experimentalDecoupleWaterFromSkyColor", false);
 	}
 
 	private void setDayEnvironment() {
