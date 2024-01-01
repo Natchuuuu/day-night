@@ -1,6 +1,6 @@
 ![](https://cdn.discordapp.com/attachments/1191205417527803907/1191268634174181538/icon.png?ex=65a4d25f&is=65925d5f&hm=df4b3f7a204356e7c4e6039735090b610b9176d7dea933bffafc533389f59b1d&)
 # Day/Night Cycle
-### Simulates a day/night cycle using 117's HD plugin based on your local time.
+### Creates a day/night cycle by changing your 117 HD plugin settings, graphical settings, and skybox based on your local time.
 #### Changes skybox, fog and lighting settings to match with time of day.
 #### Requires [117HD](https://runelite.net/plugin-hub/show/117hd)
 ![](https://cdn.discordapp.com/attachments/1191205417527803907/1191283405321683015/image.png)
