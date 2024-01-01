@@ -1,16 +1,21 @@
 package com.daynightcycle;
 
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.Range;
+import net.runelite.client.config.*;
 
 @ConfigGroup("dayNightCycle")
 public interface DayNightCycleConfig extends Config {
+    @ConfigSection(
+            name = "General",
+            description = "Please ensure you have 117 HD installed with dynamic lights enabled for all effects.",
+            position = 0
+    )
+    String generalSettings = "generalSettings";
     @ConfigItem(
             keyName = "nightTimeStart",
-            name = "Night Start",
-            description = "The hour when night begins (24-hour format)"
+            name = "Night Start (Hour)",
+            description = "The hour when night begins (24-hour format)",
+            section = "generalSettings",
+            position = 2
     )
     @Range(
             min = 12,
@@ -21,8 +26,10 @@ public interface DayNightCycleConfig extends Config {
     }
     @ConfigItem(
             keyName = "dayTimeStart",
-            name = "Day Start",
-            description = "The hour when day begins (24-hour format)"
+            name = "Day Start (Hour)",
+            description = "The hour when day begins (24-hour format)",
+            section = "generalSettings",
+            position = 1
     )
     @Range(
             min = 0,
@@ -35,7 +42,9 @@ public interface DayNightCycleConfig extends Config {
     @ConfigItem(
             keyName = "nightBrightness",
             name = "Night Brightness",
-            description = "Normal brightness level during the night."
+            description = "Brightness level during the night, between 1 and 50",
+            section = "generalSettings",
+            position = 4
     )
     @Range(
             min = 1,
@@ -48,7 +57,9 @@ public interface DayNightCycleConfig extends Config {
     @ConfigItem(
             keyName = "dayBrightness",
             name = "Day Brightness",
-            description = "Normal brightness level during day."
+            description = "Brightness level during day, between 1 and 50",
+            section = "generalSettings",
+            position = 3
     )
     @Range(
             min = 1,
@@ -66,7 +77,9 @@ public interface DayNightCycleConfig extends Config {
     @ConfigItem(
             keyName = "timeMode",
             name = "Time",
-            description = "Set the time mode to Automatic, Day, or Night."
+            description = "Set the time mode to Automatic, Day, or Night.",
+            section = "generalSettings",
+            position = 0
     )
     default TimeMode timeMode() {
         return TimeMode.AUTOMATIC;

@@ -2,6 +2,7 @@ package com.daynightcycle;
 
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @PluginDescriptor(
 		name = "Day/Night Cycle",
-		description = "Simulates a day/night cycle using 117's HD plugin based on your local time.",
+		description = "Creates a day/night cycle by changing your 117 HD plugin settings, graphical settings, and skybox.",
 		tags = { "day", "night", "cycle", "time", "ambience" },
 		conflicts = "Skybox"
 )
@@ -53,7 +54,6 @@ public class DayNightCyclePlugin extends Plugin {
 	@Override
 	protected void shutDown() throws Exception {
 		setDayEnvironment();
-		log.info("Day/Night Cycle stopped!");
 		if (executorService != null && !executorService.isShutdown()) {
 			executorService.shutdown();
 		}
@@ -64,6 +64,12 @@ public class DayNightCyclePlugin extends Plugin {
 		if (gameStateChanged.getGameState() == GameState.LOADING) {
 			updateEnvironmentSettings();
 		}
+		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
+		{
+			if (!isHdPluginEnabled()) {
+				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Day/Night Cycle: 117 HD plugin not installed/enabled, please enable 117HD with dynamic lights for full range of effects.", null);
+				}
+			}
 	}
 
 	@Subscribe
@@ -74,9 +80,6 @@ public class DayNightCyclePlugin extends Plugin {
 	}
 
 	private void updateEnvironmentSettings() {
-		if (!isHdPluginEnabled()) {
-			return;
-		}
 
 		switch (config.timeMode()) {
 			case NIGHT:
@@ -106,16 +109,21 @@ public class DayNightCyclePlugin extends Plugin {
 
 	private void setNightEnvironment() {
 		client.setSkyboxColor(0);
-		configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", config.nightBrightness());
-		configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", "RUNELITE");
-		configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky", true);
-		configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "experimentalDecoupleWaterFromSkyColor", false);
+		if (isHdPluginEnabled()){
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", config.nightBrightness());
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", "RUNELITE");
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky", true);
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "experimentalDecoupleWaterFromSkyColor", false);
+		}
 	}
 
 	private void setDayEnvironment() {
-		configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", config.dayBrightness());
-		configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", "DEFAULT");
-		configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky", false);
+		client.setSkyboxColor(12179199);
+		if (isHdPluginEnabled()) {
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", config.dayBrightness());
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", "DEFAULT");
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky", false);
+		}
 	}
 
 	private boolean isHdPluginEnabled() {
