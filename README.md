@@ -1,7 +1,7 @@
 ![](https://cdn.discordapp.com/attachments/1191205417527803907/1191268634174181538/icon.png?ex=65a4d25f&is=65925d5f&hm=df4b3f7a204356e7c4e6039735090b610b9176d7dea933bffafc533389f59b1d&)
 # Day/Night Cycle
-### Creates a day/night cycle by changing your skybox, graphical settings, and 117 HD plugin settings based on your local time.
-#### Changes skybox, fog and lighting settings to match with time of day.
+### Creates a day/night cycle by changing settings based on your local time.
+#### Changes your skybox, graphical settings, and 117 HD plugin settings to match the time of day.
 #### Requires [117HD](https://runelite.net/plugin-hub/show/117hd)
 ![](https://cdn.discordapp.com/attachments/1191205417527803907/1191283405321683015/image.png)
 ![](https://cdn.discordapp.com/attachments/1191205417527803907/1191294093121310770/image.png)
