@@ -4,8 +4,13 @@ import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.Constants;
 import net.runelite.api.GameState;
+import net.runelite.api.Player;
+import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.BeforeRender;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -24,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 @PluginDescriptor(
 		name = "Day/Night Cycle",
 		description = "Creates a day/night cycle by changing your 117 HD plugin settings, graphical settings, and skybox.",
-		tags = { "day", "night", "cycle", "time", "ambience" },
+		tags = { "day", "night", "cycle", "time", "ambience", "dynamic" },
 		conflicts = "Skybox"
 )
 public class DayNightCyclePlugin extends Plugin {
@@ -55,7 +60,7 @@ public class DayNightCyclePlugin extends Plugin {
 
 	@Override
 	protected void shutDown() throws Exception {
-		// Restore the  settings to their default values.
+		// Restore the settings to their default values.
 		client.setSkyboxColor(0);
 		if (isHdPluginEnabled()) {
 			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", 20);
@@ -93,20 +98,18 @@ public class DayNightCyclePlugin extends Plugin {
 	}
 
 	private void updateEnvironmentSettings() {
-
 		switch (config.timeMode()) {
-			case NIGHT:
-				setNightEnvironment();
-				break;
-			case DAY:
-				setDayEnvironment();
-				break;
-			case AUTOMATIC:
-			default:
-				updateAutomaticEnvironment();
-				break;
+				case NIGHT:
+					setNightEnvironment();
+					break;
+				case DAY:
+					setDayEnvironment();
+					break;
+				case AUTOMATIC:
+				default:
+					updateAutomaticEnvironment();
+					break;
 		}
-
 	}
 
 	private void updateAutomaticEnvironment() {

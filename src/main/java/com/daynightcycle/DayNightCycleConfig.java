@@ -7,13 +7,13 @@ import net.runelite.client.config.*;
 public interface DayNightCycleConfig extends Config {
     @ConfigSection(
             name = "General",
-            description = "Please ensure you have 117 HD installed with dynamic lights enabled for all effects.",
+            description = "General settings, for the entire range effects to be visible 117 HD must be enabled.",
             position = 0
     )
     String generalSettings = "generalSettings";
     @ConfigSection(
             name = "Colors",
-            description = "Change the colors of various times of day.",
+            description = "Change the color properties of various times of day.",
             position = 1
     )
     String colorSettings = "colorSettings";
@@ -116,7 +116,7 @@ public interface DayNightCycleConfig extends Config {
     @ConfigItem(
             keyName = "nightColor",
             name = "Night Sky Color",
-            description = "Sets the color of the sky during night. 117 HD nighttime compatible.",
+            description = "Sets the color of the sky during night.",
             section = "colorSettings",
             position = 1
     )
@@ -124,10 +124,10 @@ public interface DayNightCycleConfig extends Config {
 
     @ConfigItem(
             keyName = "dynamicDaytime",
-            name = "Use Dynamic Sky",
-            description = "If checked, use the dynamic 117HD sky for daytime when possible. Otherwise uses your day color.",
+            name = "Use Dynamic Daytime Sky",
+            description = "If checked, use the dynamic 117HD sky for daytime when possible. Uses your custom sky color when disabled.",
             section = "colorSettings",
-            position = 2
+            position = 3
     )
     default boolean dynamicDaytime() {
         return true;

@@ -5,7 +5,7 @@
 #### [117HD](https://runelite.net/plugin-hub/show/117hd) highly recommended to experience the full Day/Night cycle features.
 ![](https://media.discordapp.net/attachments/1191205417527803907/1191433649686597642/image.png)
 ![](https://cdn.discordapp.com/attachments/1191205417527803907/1191283405321683015/image.png)
-![](https://cdn.discordapp.com/attachments/1191205417527803907/1191294093121310770/image.png)
+![](https://cdn.discordapp.com/attachments/1191205417527803907/1191607422310166578/RuneLite_2RrivLCb8y.jpg)
 ![](https://cdn.discordapp.com/attachments/1191205417527803907/1191337578285256704/image.png)
 ## Options:
 ![](https://cdn.discordapp.com/attachments/1191205417527803907/1191552785196527726/image.png)
@@ -31,7 +31,7 @@ Brightness level during the day, between 0 and 50.
 
 >Night Brightness
 
-Brightness level during night, between 0 and 50. Please be aware a setting of 0 is the equivalent of no moonlight, requiring lights in the environment or equipped on your character for proper navigation.
+Brightness level during night, between 0 and 50. Please be aware a setting of 0 is the equivalent of no moonlight, requiring dynamic lights for proper navigation.
 
 >Startup Message
 
@@ -41,9 +41,9 @@ If checked, sends a game-message reminder if you don't have 117 HD enabled on st
 
 Choose the color for the day/night skybox/fog. Please keep in mind that the dynamic skybox option overrides the Day Color when the 117 HD plugin is enabled.
 
->Use Dynamic Sky
+>Use Dynamic Daytime Sky
 
-If checked, use the dynamic 117HD sky for daytime when possible. Otherwise uses your day color.
+If checked, use the dynamic 117HD sky for daytime when possible. Uses your custom sky color when disabled.
 
 
 
