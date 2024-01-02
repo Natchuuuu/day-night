@@ -91,15 +91,28 @@ public interface DayNightCycleConfig extends Config {
     default TimeMode timeMode() {
         return TimeMode.AUTOMATIC;
     }
+
+    @ConfigItem(
+            keyName = "startupMessage",
+            name = "Startup Message",
+            description = "If checked, sends a game-message if you don't have 117 HD enabled on start-up.",
+            section = "generalSettings",
+            position = 5
+    )
+    default boolean startupMessage() {
+        return true;
+    }
+
     // Color Settings
     @ConfigItem(
             keyName = "dayColor",
-            name = "Day Sky Color (Read desc)",
-            description = "Sets the color of the sky during day, is overridden by 117 HD.",
+            name = "Day Sky Color",
+            description = "Sets the color of the sky during day, is overridden for 117 HD if Use Dynamic Sky is checked",
             section = "colorSettings",
             position = 0
     )
     default Color dayColor(){return Color.LIGHT_GRAY;}
+
     @ConfigItem(
             keyName = "nightColor",
             name = "Night Sky Color",
@@ -108,4 +121,15 @@ public interface DayNightCycleConfig extends Config {
             position = 1
     )
     default Color nightColor(){return Color.BLACK;}
+
+    @ConfigItem(
+            keyName = "dynamicDaytime",
+            name = "Use Dynamic Sky",
+            description = "If checked, use the dynamic 117HD sky for daytime when possible. Otherwise uses your day color.",
+            section = "colorSettings",
+            position = 2
+    )
+    default boolean dynamicDaytime() {
+        return true;
+    }
 }

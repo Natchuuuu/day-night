@@ -8,7 +8,7 @@
 ![](https://cdn.discordapp.com/attachments/1191205417527803907/1191294093121310770/image.png)
 ![](https://cdn.discordapp.com/attachments/1191205417527803907/1191337578285256704/image.png)
 ## Options:
-![](https://cdn.discordapp.com/attachments/1191205417527803907/1191434391793176676/image.png)
+![](https://cdn.discordapp.com/attachments/1191205417527803907/1191552785196527726/image.png)
 
 >Time
 
@@ -27,15 +27,24 @@ The hour when night begins (24-hour format)
 
 >Day Brightness
 
-Brightness level during the night, between 0 and 50.
+Brightness level during the day, between 0 and 50.
 
 >Night Brightness
 
-Brightness level during day, between 0 and 50.
+Brightness level during night, between 0 and 50. Please be aware a setting of 0 is the equivalent of no moonlight, requiring lights in the environment or equipped on your character for proper navigation.
+
+>Startup Message
+
+If checked, sends a game-message reminder if you don't have 117 HD enabled on start-up.
 
 >Color Settings
 
-Choose the color for the day/night skybox/fog. Be aware that the dynamic skybox overrides the Day Color when the 117 HD plugin is enabled. The Night Color works for all graphical modes.
+Choose the color for the day/night skybox/fog. Please keep in mind that the dynamic skybox option overrides the Day Color when the 117 HD plugin is enabled.
+
+>Use Dynamic Sky
+
+If checked, use the dynamic 117HD sky for daytime when possible. Otherwise uses your day color.
+
 
 
 ## Future Tasks:

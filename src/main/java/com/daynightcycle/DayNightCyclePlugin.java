@@ -43,37 +43,25 @@ public class DayNightCyclePlugin extends Plugin {
 	private ScheduledExecutorService executorService;
 
 	private static final String HD_PLUGIN_CONFIG_GROUP = "hd";
-	private int initialSkyboxColor;
-	private String initialBrightness;
-	private String initialSkyColor;
-	private boolean initialOverrideSky;
-	private boolean initialExperimentalDecoupleWaterFromSkyColor;
+
 
 	@Override
 	protected void startUp() throws Exception {
-		// Store the default values before changing them
-		initialSkyboxColor = client.getSkyboxColor();
-		if (isHdPluginEnabled()) {
-			initialBrightness = configManager.getConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2");
-			initialSkyColor = configManager.getConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor");
-			initialOverrideSky = Boolean.parseBoolean(configManager.getConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky"));
-			initialExperimentalDecoupleWaterFromSkyColor = Boolean.parseBoolean(configManager.getConfiguration(HD_PLUGIN_CONFIG_GROUP, "experimentalDecoupleWaterFromSkyColor"));
-		}
 		updateEnvironmentSettings();
-		//Update settings every minute
+		//Check each minute to update settings based on time.
 		executorService = Executors.newSingleThreadScheduledExecutor();
 		executorService.scheduleAtFixedRate(this::updateEnvironmentSettings, 0, 1, TimeUnit.MINUTES);
 	}
 
 	@Override
 	protected void shutDown() throws Exception {
-		// Restore the original settings to their initial values
-		client.setSkyboxColor(initialSkyboxColor);
+		// Restore the  settings to their default values.
+		client.setSkyboxColor(0);
 		if (isHdPluginEnabled()) {
-			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", initialBrightness);
-			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", initialSkyColor);
-			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky", initialOverrideSky);
-			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "experimentalDecoupleWaterFromSkyColor", initialExperimentalDecoupleWaterFromSkyColor);
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", 20);
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", "DEFAULT");
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky", false);
+			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "experimentalDecoupleWaterFromSkyColor", false);
 		}
 		// End time check
 		if (executorService != null && !executorService.isShutdown()) {
@@ -89,14 +77,17 @@ public class DayNightCyclePlugin extends Plugin {
 		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
 		{
 			if (!isHdPluginEnabled()) {
-				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Day/Night Cycle: 117 HD plugin not installed/enabled, please enable 117HD with dynamic lights for full range of effects.", null);
+				if(config.startupMessage()) {
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Day/Night Cycle: 117 HD plugin not enabled, please enable 117HD with dynamic lights for full range of effects.", null);
 				}
 			}
+		}
 	}
 
 	@Subscribe
 	public void onConfigChanged(ConfigChanged configChanged) {
 		if (configChanged.getGroup().equals("dayNightCycle")) {
+			// Refresh Sky
 			updateEnvironmentSettings();
 		}
 	}
@@ -115,6 +106,7 @@ public class DayNightCyclePlugin extends Plugin {
 				updateAutomaticEnvironment();
 				break;
 		}
+
 	}
 
 	private void updateAutomaticEnvironment() {
@@ -131,7 +123,7 @@ public class DayNightCyclePlugin extends Plugin {
 
 	private void setNightEnvironment() {
 		client.setSkyboxColor(config.nightColor().getRGB());
-		if (isHdPluginEnabled()){
+		if (isHdPluginFound()){
 			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", config.nightBrightness());
 			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", "RUNELITE");
 			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky", true);
@@ -141,10 +133,17 @@ public class DayNightCyclePlugin extends Plugin {
 
 	private void setDayEnvironment() {
 		client.setSkyboxColor(config.dayColor().getRGB());
-		if (isHdPluginEnabled()) {
+		if (isHdPluginFound()) {
 			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "brightness2", config.dayBrightness());
-			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", "DEFAULT");
-			configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky", false);
+			if(config.dynamicDaytime()) {
+				configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", "DEFAULT");
+				configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky", false);
+			}
+			else{
+				configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "defaultSkyColor", "RUNELITE");
+				configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "overrideSky", true);
+				configManager.setConfiguration(HD_PLUGIN_CONFIG_GROUP, "experimentalDecoupleWaterFromSkyColor", false);
+			}
 		}
 	}
 
@@ -156,6 +155,17 @@ public class DayNightCyclePlugin extends Plugin {
 			}
 		}
 		return false;
+	}
+	private boolean isHdPluginFound() {
+		Collection<Plugin> plugins = pluginManager.getPlugins();
+		boolean hdFound = false;
+		for (Plugin plugin : plugins) {
+
+			if (plugin.getName().equals("117 HD")) {
+				return true;
+			}
+		}
+		return hdFound;
 	}
 
 	@Provides
